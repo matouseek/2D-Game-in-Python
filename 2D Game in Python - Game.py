@@ -40,6 +40,9 @@ class Guts:
         self.face_left = False
         self.idle = True
 
+        # Jump check
+        self.jump_check = False
+
         # Variables for checking which frame of animation to print
         self.stepIndex = 0
         self.stepIndex_Idle = 0
@@ -75,6 +78,16 @@ class Guts:
         elif self.idle:
             win.blit(guts_idle[self.stepIndex_Idle//5], (self.x, self.y))
             self.stepIndex_Idle += 1
+
+    def jump(self, userInput):
+        if userInput[pygame.K_UP] and self.jump_check is False:
+            self.jump_check = True
+        if self.jump_check:
+            self.y -= self.vely*2
+            self.vely -= 1
+        if self.vely < -10:
+            self.vely = 10
+            self.jump_check = False
 # Draw game
 def draw_game():
     win.fill((0, 0, 0))
@@ -96,5 +109,6 @@ while run:
 
     # Movement Guts
     guts.move_guts(userInput)
+    guts.jump(userInput)
 
     draw_game()

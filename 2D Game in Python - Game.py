@@ -25,6 +25,23 @@ guts_right = [pygame.image.load(os.path.join("guts run right", "guts run right1.
          pygame.image.load(os.path.join("guts run right", "guts run right3.png"))
          ]
 
+mrakoplas_idle = [pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas1.png")),
+        pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas2.png")),
+        pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas3.png")),
+        pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas4.png")),
+        pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas5.png"))
+        ]
+mrakoplas_left = [pygame.image.load(os.path.join("mrakoplas run left", "mrakoplas run left1.png")),
+        pygame.image.load(os.path.join("mrakoplas run left", "mrakoplas run left2.png")),
+        pygame.image.load(os.path.join("mrakoplas run left", "mrakoplas run left3.png")),
+        pygame.image.load(os.path.join("mrakoplas run left", "mrakoplas run left4.png"))
+        ]
+mrakoplas_right =[pygame.image.load(os.path.join("mrakoplas run right", "mrakoplas run right1.png")),
+         pygame.image.load(os.path.join("mrakoplas run right", "mrakoplas run right2.png")),
+         pygame.image.load(os.path.join("mrakoplas run right", "mrakoplas run right3.png")),
+        pygame.image.load(os.path.join("mrakoplas run right", "mrakoplas run right4.png"))
+        ]
+
 class Guts:
     def __init__(self, x, y):
         # Coordinates x, y
@@ -88,14 +105,80 @@ class Guts:
         if self.vely < -10:
             self.vely = 10
             self.jump_check = False
+
+class Mrakoplas:
+    def __init__(self, x, y):
+        # Coordinates x, y
+        self.x = x
+        self.y = y
+
+        # Velocities, both x, y
+        self.velx = 10
+        self.vely = 10
+
+        # Variables for checking which animation to print
+        self.face_right = False
+        self.face_left = False
+        self.idle = True
+
+        # Jump check
+        self.jump_check = False
+
+        # Variables for checking which frame of animation to print
+        self.stepIndex = 0
+        self.stepIndex_Idle = 0
+
+    def move_mrakoplas(self, userInput):
+        if userInput[pygame.K_d] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
+            self.x += self.velx
+            self.face_right = True
+            self.face_left = False
+            self.idle = False
+        elif userInput[pygame.K_a] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
+            self.x -= self.velx
+            self.face_right = False
+            self.face_left = True
+            self.idle = False
+        else: # If I'm not pressing anything, the character is in Idle state
+            self.face_right = False
+            self.face_left = False
+            self.idle = True
+            self.stepIndex = 0
+
+    def draw(self, win):
+        if self.stepIndex >= 16:
+            self.stepIndex = 0
+        if self.stepIndex_Idle >= 25:
+            self.stepIndex_Idle = 0
+        if self.face_right:
+            win.blit(mrakoplas_right[self.stepIndex // 4], (self.x, self.y))
+            self.stepIndex += 1
+        elif self.face_left:
+            win.blit(mrakoplas_left[self.stepIndex // 4], (self.x, self.y))
+            self.stepIndex += 1
+        elif self.idle:
+            win.blit(mrakoplas_idle[self.stepIndex_Idle // 5], (self.x, self.y))
+            self.stepIndex_Idle += 1
+
+    def jump(self, userInput):
+        if userInput[pygame.K_w] and self.jump_check is False:
+            self.jump_check = True
+        if self.jump_check:
+            self.y -= self.vely*2
+            self.vely -= 1
+        if self.vely < -10:
+            self.vely = 10
+            self.jump_check = False
 # Draw game
 def draw_game():
     win.fill((0, 0, 0))
     win.blit(background, (0 ,0))
     guts.draw(win)
+    mrakoplas.draw(win)
     pygame.display.update()
 
 guts = Guts(250, 290)
+mrakoplas = Mrakoplas(400, 290)
 
 # Game loop
 run = True
@@ -110,5 +193,9 @@ while run:
     # Movement Guts
     guts.move_guts(userInput)
     guts.jump(userInput)
+
+    # Movement Mrakoplas
+    mrakoplas.move_mrakoplas(userInput)
+    mrakoplas.jump(userInput)
 
     draw_game()

@@ -24,6 +24,26 @@ guts_right = [pygame.image.load(os.path.join("guts run right", "guts run right1.
          pygame.image.load(os.path.join("guts run right", "guts run right2.png")),
          pygame.image.load(os.path.join("guts run right", "guts run right3.png"))
          ]
+guts_att_right = [pygame.image.load(os.path.join("guts attack right", "guts attack right1.png")),
+                  pygame.image.load(os.path.join("guts attack right", "guts attack right2.png")),
+                  pygame.image.load(os.path.join("guts attack right", "guts attack right3.png")),
+                  pygame.image.load(os.path.join("guts attack right", "guts attack right4.png"))
+                  ]
+guts_att_left = [pygame.image.load(os.path.join("guts attack left", "guts attack left1.png")),
+                  pygame.image.load(os.path.join("guts attack left", "guts attack left2.png")),
+                  pygame.image.load(os.path.join("guts attack left", "guts attack left3.png")),
+                  pygame.image.load(os.path.join("guts attack left", "guts attack left4.png"))
+                  ]
+dragonslayer_right = [pygame.image.load(os.path.join("dragonslayer right", "dragonslayer right1.png")),
+                      pygame.image.load(os.path.join("dragonslayer right", "dragonslayer right2.png")),
+                      pygame.image.load(os.path.join("dragonslayer right", "dragonslayer right3.png")),
+                      pygame.image.load(os.path.join("dragonslayer right", "dragonslayer right4.png"))
+                      ]
+dragonslayer_left =  [pygame.image.load(os.path.join("dragonslayer left", "dragonslayer left1.png")),
+                      pygame.image.load(os.path.join("dragonslayer left", "dragonslayer left2.png")),
+                      pygame.image.load(os.path.join("dragonslayer left", "dragonslayer left3.png")),
+                      pygame.image.load(os.path.join("dragonslayer left", "dragonslayer left4.png"))
+                      ]
 
 mrakoplas_idle = [pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas1.png")),
         pygame.image.load(os.path.join("mrakoplas idle", "mrakoplas2.png")),
@@ -74,6 +94,9 @@ class Guts:
         self.face_right = False
         self.face_left = False
         self.idle = True
+        self.att_check = False
+        self.att_right = True
+        self.att_left = False
 
         # Jump check
         self.jump_check = False
@@ -81,38 +104,63 @@ class Guts:
         # Variables for checking which frame of animation to print
         self.stepIndex = 0
         self.stepIndex_Idle = 0
+        self.stepIndex_Attack = 0
 
     def move_guts(self, userInput):
-        if userInput[pygame.K_RIGHT] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
-            self.x += self.velx
-            self.face_right = True
-            self.face_left = False
-            self.idle = False
-        elif userInput[pygame.K_LEFT] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
-            self.x -= self.velx
-            self.face_right = False
-            self.face_left = True
-            self.idle = False
-        else: # If I'm not pressing anything, the character is in Idle state
-            self.face_right = False
-            self.face_left = False
-            self.idle = True
-            self.stepIndex = 0
+        if self.att_check:
+            pass
+        else:
+            if userInput[pygame.K_RIGHT] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
+                self.x += self.velx
+                self.face_right = True
+                self.face_left = False
+                self.idle = False
+                self.att_right = True
+                self.att_left = False
+            elif userInput[pygame.K_LEFT] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
+                self.x -= self.velx
+                self.face_right = False
+                self.face_left = True
+                self.idle = False
+                self.att_right = False
+                self.att_left = True
+            else: # If I'm not pressing anything, the character is in Idle state
+                self.face_right = False
+                self.face_left = False
+                self.idle = True
+                self.stepIndex = 0
+
+    def attack(self, userInput):
+        if userInput[pygame.K_RCTRL] and self.att_check == False:
+            self.att_check = True
 
     def draw(self, win):
-        if self.stepIndex >= 6:
-            self.stepIndex = 0
-        if self.stepIndex_Idle >= 20:
-            self.stepIndex_Idle = 0
-        if self.face_right:
-            win.blit(guts_right[self.stepIndex//2], (self.x, self.y))
-            self.stepIndex += 1
-        elif self.face_left:
-            win.blit(guts_left[self.stepIndex//2], (self.x, self.y))
-            self.stepIndex += 1
-        elif self.idle:
-            win.blit(guts_idle[self.stepIndex_Idle//5], (self.x, self.y))
-            self.stepIndex_Idle += 1
+        if self.att_check:
+            if self.stepIndex_Attack >= 20:
+                self.stepIndex_Attack = 0
+                self.att_check = False
+            if self.att_right:
+                win.blit(dragonslayer_right[self.stepIndex_Attack // 5], (self.x, self.y - 23))
+                win.blit(guts_att_right[self.stepIndex_Attack // 5], (self.x, self.y))
+                self.stepIndex_Attack += 1
+            elif self.att_left:
+                win.blit(dragonslayer_left[self.stepIndex_Attack // 5], (self.x - 30, self.y - 23))
+                win.blit(guts_att_left[self.stepIndex_Attack // 5], (self.x, self.y))
+                self.stepIndex_Attack += 1
+        else:
+            if self.stepIndex >= 6:
+                self.stepIndex = 0
+            if self.stepIndex_Idle >= 20:
+                self.stepIndex_Idle = 0
+            if self.face_right:
+                win.blit(guts_right[self.stepIndex//2], (self.x, self.y))
+                self.stepIndex += 1
+            elif self.face_left:
+                win.blit(guts_left[self.stepIndex//2], (self.x, self.y))
+                self.stepIndex += 1
+            elif self.idle:
+                win.blit(guts_idle[self.stepIndex_Idle//5], (self.x, self.y))
+                self.stepIndex_Idle += 1
 
     def jump(self, userInput):
         if userInput[pygame.K_UP] and self.jump_check is False:
@@ -141,9 +189,9 @@ class Mrakoplas:
         self.face_right = False
         self.face_left = False
         self.idle = True
+        self.att_check = False
         self.att_right = True
         self.att_left = False
-        self.att_check = False
 
         # Variables for checking when an action ends
         self.jump_check = False
@@ -208,7 +256,7 @@ class Mrakoplas:
 
     def draw(self, win):
         if self.att_check:
-            if self.stepIndex_Attack >=20:
+            if self.stepIndex_Attack >= 20:
                 self.stepIndex_Attack = 0
                 self.att_check = False
                 self.fireball_check = True
@@ -266,6 +314,7 @@ while run:
     userInput = pygame.key.get_pressed()
 
     # Movement Guts
+    guts.attack(userInput)
     guts.move_guts(userInput)
     guts.jump(userInput)
 

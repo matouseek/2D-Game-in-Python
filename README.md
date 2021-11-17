@@ -17,8 +17,8 @@ This file is going to be updated regularly until I finish my work and submit it.
 ## Game logic
 Just a side note but none of the code bellow will work on its own, its used here only to showcase how certain
 mechanics work without having to take huge chunks of code from the actual game
-* ###Movement
-\
+* **Movement**
+
 To move our character we'll be working with the following variables and functions:
 
 (example shown on the Guts class)
@@ -125,7 +125,8 @@ or the x-axis value reaches 0
     **def draw(self, win)** - prints the attack animation, if the attack animation is over, sets self.fireball_check on True\
 \
     **def fireball(self, win)** - prints the fireball and stops the user from firing another fireball
-    until the first one disappears behind the edges of the window
+    until the first one disappears behind the edges of the window\
+\
     * **Guts**\
     To be able to attack as Guts we'll need the following variables and functions:
     ```python

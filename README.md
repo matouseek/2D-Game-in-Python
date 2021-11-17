@@ -173,7 +173,7 @@ or the x-axis value reaches 0
 \
     **def draw(self, win)** - prints the attack animation
 
-  * **Animations**
+  * **Animations**\
 In order to print animations we'll need these variables and functions:\
 (example shown on the Mrakoplas class, specifically on his move animation)
 ```python
@@ -227,6 +227,45 @@ class Mrakoplas:
 -in this function the right/left or idle animation will be printed based on which variables are True and which are False\
 -the images are taken from our previously defined lists (i.e. mrakoplas_idle)\
 -the index of each frame is divided by 4 and the indexes reset if the value is 16, that is because we want the animations to last longer without changing the FPS, 
-we can achieve that by printing one frame more than once (in this case 4 times) before moving onto another one\
+we can achieve that by printing one frame more than once (in this case 4 times) before moving onto another one
 
-  * **Jumping**
+  * **Jumping**\
+If we want our character to jump we need the following variables and functions:\
+(example shown on the Guts class)
+
+```python
+import pygame
+
+
+class Guts:
+    def __init__(self, y):
+        self.y = y
+        self.vely = 10
+
+        self.jump_check = False
+
+    def jump(self, userInput):
+        if userInput[pygame.K_UP] and self.jump_check = False:
+            self.jump_check = True
+        if self.jump_check:
+            self.y -= self.vely*2
+            self.vely -= 1
+        if self.vely < -10:
+            self.vely = 10
+            self.jump_check = False
+```
+**self.y** - position of the character on the y-axis\
+\
+**self.vely** - y-axis velocity of the character\
+\
+**self.jump_check** - variable for checking when to jump\
+\
+**userInput** - input from the user, we'll be getting that in the game loop,
+in this case it will be the UP key\
+\
+**def jump(self, userInput)** -\
+-if the user presses the UP key, self.jump_check will be set to True\
+-self.vely will be subtracted from self.y for every frame that self.jump_check is True(the *2 is there only so the character jumps faster)\
+-1 will be subtracted from self.vely for every frame that self.jump_check is True\
+-this will result in self.vely eventually turning negative and moving the character back into its original position\
+-because of the decaying (and after self.vely < 0, raising) velocity it also simulates gravity pretty well

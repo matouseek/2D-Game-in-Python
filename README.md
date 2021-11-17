@@ -171,6 +171,62 @@ or the x-axis value reaches 0
     **def move_guts(self, userInput)** - this is the move function from above but with added feature to halt any
     movement if the character is attacking\
 \
-    **def draw(self, win)** - prints the attack animation\
+    **def draw(self, win)** - prints the attack animation
+
   * **Animations**
+In order to print animations we'll need these variables and functions:\
+(example shown on the Mrakoplas class, specifically on his move animation)
+```python
+mrakoplas_right = [file1.png, file2.png, file3.png, file4.png]
+mrakoplas_left = [file1.png, file2.png, file3.png, file4.png]
+mrakoplas_idle = [file1.png, file2.png, file3.png, file4.png]
+
+class Mrakoplas:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.face_right = False
+        self.face_left = False
+        self.idle = True
+    
+        self.stepIndex = 0
+        self.stepIndex_Idle = 0
+    
+    def draw(self, win):
+        if self.stepIndex >= 16:
+            self.stepIndex = 0
+        if self.stepIndex_Idle >= 16:
+            self.stepIndex_Idle = 0
+        if self.face_right:
+            win.blit(mrakoplas_right[self.stepIndex//4], (self.x, self.y))
+            self.stepIndex += 1
+        if self.face_left:
+            win.blit(mrakoplas_left[self.stepIndex//4], (self.x, self.y))
+            self.stepIndex += 1
+        elif self.idle:
+            win.blit(mrakoplas_idle[self.stepIndex_Idle//4], (self.x, self.y))
+            self.stepIndex_Idle += 1
+```
+**self.x** - position of the character on the x-axis\
+\
+**self.y** - position of the character on the y-axis\
+\
+**self.face_right** - variable that helps us see if the character is running right\
+\
+**self.face_left** - variable that helps us see if the character is running left\
+\
+**self.idle** - variable that helps us see if the character is in idle position (not running left or right)\
+\
+**self.stepIndex** - index to help us track which frame of the right/left animation to print\
+\
+**self.stepIndex_Idle** - index to help us track which frame of the idle animation to print\
+\
+**win** - is the surface on which our character will be printed\
+\
+**def draw(self, win)** - \
+-in this function the right/left or idle animation will be printed based on which variables are True and which are False\
+-the images are taken from our previously defined lists (i.e. mrakoplas_idle)\
+-the index of each frame is divided by 4 and the indexes reset if the value is 16, that is because we want the animations to last longer without changing the FPS, 
+we can achieve that by printing one frame more than once (in this case 4 times) before moving onto another one\
+
   * **Jumping**

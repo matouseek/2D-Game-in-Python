@@ -18,6 +18,7 @@ This file is going to be updated regularly until I finish my work and submit it.
 Just a side note but none of the code bellow will work on its own, its used here only to showcase how certain
 mechanics work without having to take huge chunks of code from the actual game
 * ###Movement
+\
 To move our character we'll be working with the following variables and functions:
 
 (example shown on the Guts class)
@@ -53,8 +54,8 @@ If the player presses the Left key and our characters x-axis value is more than 
 the value of our character will decrease by 10 for every frame until we let go of that key
 or the x-axis value reaches 0
 
-  * ###Attacking
-      * ###Mrakoplas
+  * **Attacking**
+      * **Mrakoplas**\
     To be able to attack as Mrakoplas we'll need the following variables and functions:
     ```python
     class Mrakoplas:
@@ -125,7 +126,7 @@ or the x-axis value reaches 0
 \
     **def fireball(self, win)** - prints the fireball and stops the user from firing another fireball
     until the first one disappears behind the edges of the window
-    * ###Guts
+    * **Guts**\
     To be able to attack as Guts we'll need the following variables and functions:
     ```python
     class Guts:
@@ -170,5 +171,5 @@ or the x-axis value reaches 0
     movement if the character is attacking\
 \
     **def draw(self, win)** - prints the attack animation\
-  * ###Animations
-  * ###Jumping
+  * **Animations**
+  * **Jumping**

@@ -125,8 +125,8 @@ or the x-axis value reaches 0
     **def draw(self, win)** - prints the attack animation, if the attack animation is over, sets self.fireball_check on True\
 \
     **def fireball(self, win)** - prints the fireball and stops the user from firing another fireball
-    until the first one disappears behind the edges of the window\
-\
+    until the first one disappears behind the edges of the window
+  
     * **Guts**\
     To be able to attack as Guts we'll need the following variables and functions:
     ```python

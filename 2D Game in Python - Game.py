@@ -106,12 +106,20 @@ class Guts:
         self.stepIndex_Idle = 0
         self.stepIndex_Attack = 0
 
+        # Rects
+        self.dragonslayer_rect = None
+        self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
+
+        # Collides
+        self.collide_check = False
+
     def move_guts(self, userInput):
         if self.att_check:
             pass
         else:
             if userInput[pygame.K_RIGHT] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
                 self.x += self.velx
+                self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = True
                 self.face_left = False
                 self.idle = False
@@ -119,6 +127,7 @@ class Guts:
                 self.att_left = False
             elif userInput[pygame.K_LEFT] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
                 self.x -= self.velx
+                self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = False
                 self.face_left = True
                 self.idle = False
@@ -134,18 +143,28 @@ class Guts:
         if userInput[pygame.K_RCTRL] and self.att_check == False:
             self.att_check = True
 
+    def collision(self, enemy_rect):
+        if self.att_check:
+            if self.dragonslayer_rect.colliderect(enemy_rect) and self.collide_check == False:
+                self.collide_check = True
+                print('g -> m')
+
     def draw(self, win):
         if self.att_check:
             if self.stepIndex_Attack >= 20:
                 self.stepIndex_Attack = 0
                 self.att_check = False
+                self.dragonslayer_rect = None
+                self.collide_check = False
             if self.att_right:
                 win.blit(dragonslayer_right[self.stepIndex_Attack // 5], (self.x, self.y - 23))
                 win.blit(guts_att_right[self.stepIndex_Attack // 5], (self.x, self.y))
+                self.dragonslayer_rect = dragonslayer_right[0].get_rect(topleft=(self.x, self.y - 23))
                 self.stepIndex_Attack += 1
             elif self.att_left:
                 win.blit(dragonslayer_left[self.stepIndex_Attack // 5], (self.x - 30, self.y - 23))
                 win.blit(guts_att_left[self.stepIndex_Attack // 5], (self.x, self.y))
+                self.dragonslayer_rect = dragonslayer_left[0].get_rect(topleft=(self.x - 30, self.y - 23))
                 self.stepIndex_Attack += 1
         else:
             if self.stepIndex >= 6:
@@ -167,6 +186,7 @@ class Guts:
             self.jump_check = True
         if self.jump_check:
             self.y -= self.vely*2
+            self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
             self.vely -= 1
         if self.vely < -10:
             self.vely = 10
@@ -203,8 +223,9 @@ class Mrakoplas:
         self.stepIndex_Attack = 0
         self.stepIndex_fireball = 0
 
-        # Fireball rect
+        # Rects
         self.fireball_rect = None
+        self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
 
     def move_mrakoplas(self, userInput):
         if self.att_check: # Character stays in place while attacking
@@ -212,6 +233,7 @@ class Mrakoplas:
         else:
             if userInput[pygame.K_d] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
                 self.x += self.velx
+                self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = True
                 self.face_left = False
                 self.idle = False
@@ -220,6 +242,7 @@ class Mrakoplas:
                     self.att_left = False
             elif userInput[pygame.K_a] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
                 self.x -= self.velx
+                self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = False
                 self.face_left = True
                 self.idle = False
@@ -236,16 +259,24 @@ class Mrakoplas:
         if userInput[pygame.K_SPACE] and self.fireball_check == False:
             self.att_check = True
 
+    def collision(self, enemy_rect):
+        if self.fireball_check:
+            if self.fireball_rect.colliderect(enemy_rect):
+                print('m -> g')
+                self.fireball_check = False
+
     def fireball(self, win):
-        if -20<self.fireball_x<800:
+        if -20<self.fireball_x<win_width:
             if self.att_right and self.fireball_check:
                 win.blit(fireball_right[self.stepIndex_fireball//5], (self.fireball_x, self.fireball_y))
                 self.fireball_x += self.fireball_velx
+                self.fireball_rect = fireball_right[0].get_rect(topleft=(self.fireball_x, self.fireball_y))
                 self.stepIndex_fireball += 1
                 if self.stepIndex_fireball == 15:
                     self.stepIndex_fireball = 0
             elif self.att_left and self.fireball_check:
                 win.blit(fireball_left[self.stepIndex_fireball//5], (self.fireball_x, self.fireball_y))
+                self.fireball_rect = fireball_left[0].get_rect(topleft=(self.fireball_x, self.fireball_y))
                 self.fireball_x -= self.fireball_velx
                 self.stepIndex_fireball += 1
                 if self.stepIndex_fireball == 15:
@@ -287,18 +318,11 @@ class Mrakoplas:
             self.jump_check = True
         if self.jump_check:
             self.y -= self.vely*2
+            self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
             self.vely -= 1
         if self.vely < -10:
             self.vely = 10
             self.jump_check = False
-# Draw game
-def draw_game():
-    win.fill((0, 0, 0))
-    win.blit(background, (0 ,0))
-    guts.draw(win)
-    mrakoplas.draw(win)
-    mrakoplas.fireball(win)
-    pygame.display.update()
 
 guts = Guts(250, 290)
 mrakoplas = Mrakoplas(400, 290)
@@ -310,6 +334,10 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+    win.fill((0,0,0))
+    win.blit(background, (0,0))
+
     # Input
     userInput = pygame.key.get_pressed()
 
@@ -317,10 +345,15 @@ while run:
     guts.attack(userInput)
     guts.move_guts(userInput)
     guts.jump(userInput)
+    guts.draw(win)
+    guts.collision(mrakoplas.mrakoplas_rect)
 
     # Movement Mrakoplas
     mrakoplas.attack(userInput)
     mrakoplas.move_mrakoplas(userInput)
     mrakoplas.jump(userInput)
+    mrakoplas.draw(win)
+    mrakoplas.fireball(win)
+    mrakoplas.collision(guts.guts_rect)
 
-    draw_game()
+    pygame.display.update()

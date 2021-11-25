@@ -113,6 +113,9 @@ class Guts:
         # Collides
         self.collide_check = False
 
+        #HP
+        self.hp = 4
+
     def move_guts(self, userInput):
         if self.att_check:
             pass
@@ -143,11 +146,12 @@ class Guts:
         if userInput[pygame.K_RCTRL] and self.att_check == False:
             self.att_check = True
 
-    def collision(self, enemy_rect):
+    def collision(self, enemy_rect, enemy):
         if self.att_check:
             if self.dragonslayer_rect.colliderect(enemy_rect) and self.collide_check == False:
                 self.collide_check = True
                 print('g -> m')
+                enemy.get_dmg()
 
     def draw(self, win):
         if self.att_check:
@@ -192,6 +196,17 @@ class Guts:
             self.vely = 10
             self.jump_check = False
 
+    def hp_bar(self, win):
+        pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10))
+        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*16, 10))
+        pygame.draw.rect(win, (0, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10), 2)
+
+    def get_dmg(self):
+        if self.hp > 0:
+            self.hp -= 1
+        else:
+            self.hp = 0
+
 class Mrakoplas:
     def __init__(self, x, y):
         # Coordinates x, y
@@ -227,6 +242,9 @@ class Mrakoplas:
         self.fireball_rect = None
         self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
 
+        #HP
+        self.hp = 4
+
     def move_mrakoplas(self, userInput):
         if self.att_check: # Character stays in place while attacking
             pass
@@ -259,9 +277,10 @@ class Mrakoplas:
         if userInput[pygame.K_SPACE] and self.fireball_check == False:
             self.att_check = True
 
-    def collision(self, enemy_rect):
+    def collision(self, enemy_rect, enemy):
         if self.fireball_check:
             if self.fireball_rect.colliderect(enemy_rect):
+                enemy.get_dmg()
                 print('m -> g')
                 self.fireball_check = False
 
@@ -324,8 +343,36 @@ class Mrakoplas:
             self.vely = 10
             self.jump_check = False
 
+    def hp_bar(self, win):
+        pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10))
+        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*16, 10))
+        pygame.draw.rect(win, (0, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10), 2)
+
+    def get_dmg(self):
+        if self.hp > 0:
+            self.hp -= 1
+        else:
+            self.hp = 0
+
 guts = Guts(250, 290)
 mrakoplas = Mrakoplas(400, 290)
+
+def draw_guts():
+    guts.attack(userInput)
+    guts.move_guts(userInput)
+    guts.jump(userInput)
+    guts.draw(win)
+    guts.collision(mrakoplas.mrakoplas_rect, mrakoplas)
+    guts.hp_bar(win)
+
+def draw_mrakoplas():
+    mrakoplas.attack(userInput)
+    mrakoplas.move_mrakoplas(userInput)
+    mrakoplas.jump(userInput)
+    mrakoplas.draw(win)
+    mrakoplas.fireball(win)
+    mrakoplas.collision(guts.guts_rect, guts)
+    mrakoplas.hp_bar(win)
 
 # Game loop
 run = True
@@ -341,19 +388,7 @@ while run:
     # Input
     userInput = pygame.key.get_pressed()
 
-    # Movement Guts
-    guts.attack(userInput)
-    guts.move_guts(userInput)
-    guts.jump(userInput)
-    guts.draw(win)
-    guts.collision(mrakoplas.mrakoplas_rect)
-
-    # Movement Mrakoplas
-    mrakoplas.attack(userInput)
-    mrakoplas.move_mrakoplas(userInput)
-    mrakoplas.jump(userInput)
-    mrakoplas.draw(win)
-    mrakoplas.fireball(win)
-    mrakoplas.collision(guts.guts_rect)
+    draw_guts()
+    draw_mrakoplas()
 
     pygame.display.update()

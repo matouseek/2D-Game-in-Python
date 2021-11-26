@@ -114,7 +114,7 @@ class Guts:
         self.collide_check = False
 
         #HP
-        self.hp = 4
+        self.hp = 8
 
     def move_guts(self, userInput):
         if self.att_check:
@@ -198,7 +198,7 @@ class Guts:
 
     def hp_bar(self, win):
         pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10))
-        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*16, 10))
+        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*8, 10))
         pygame.draw.rect(win, (0, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10), 2)
 
     def get_dmg(self):
@@ -243,7 +243,7 @@ class Mrakoplas:
         self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
 
         #HP
-        self.hp = 4
+        self.hp = 8
 
     def move_mrakoplas(self, userInput):
         if self.att_check: # Character stays in place while attacking
@@ -310,7 +310,10 @@ class Mrakoplas:
                 self.stepIndex_Attack = 0
                 self.att_check = False
                 self.fireball_check = True
-                self.fireball_x, self.fireball_y = self.x + 50, self.y + 20
+                if self.att_right:
+                    self.fireball_x, self.fireball_y = self.x + 50, self.y + 20
+                elif self.att_left:
+                    self.fireball_x, self.fireball_y = self.x, self.y + 20
             if self.att_right:
                 win.blit(mrakoplas_att_right[self.stepIndex_Attack//5], (self.x, self.y))
                 self.stepIndex_Attack += 1
@@ -345,7 +348,7 @@ class Mrakoplas:
 
     def hp_bar(self, win):
         pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10))
-        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*16, 10))
+        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*8, 10))
         pygame.draw.rect(win, (0, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10), 2)
 
     def get_dmg(self):

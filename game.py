@@ -1,14 +1,7 @@
-import pygame
 # I'll be using os in order to load my images
 import os
 
-# Init and Window Creation, Clock init, Background load
-pygame.init()
-win_height = 400
-win_width = 800
-win = pygame.display.set_mode((win_width, win_height))
-clock = pygame.time.Clock()
-background = pygame.transform.scale(pygame.image.load(os.path.join("Background.png")), (win_width, win_height)) # I scale my background to win_width, win_height using pygame.transform
+from menu import *
 
 # Loading Images
 guts_idle = [pygame.image.load(os.path.join("guts idle", "guts idle1.png")),
@@ -120,7 +113,7 @@ class Guts:
         if self.att_check:
             pass
         else:
-            if userInput[pygame.K_RIGHT] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
+            if userInput[pygame.K_RIGHT] and self.x <= 800 - 64: # 'self.x <= 800 - 64' allows me to check whether the character is out of window
                 self.x += self.velx
                 self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = True
@@ -150,7 +143,6 @@ class Guts:
         if self.att_check:
             if self.dragonslayer_rect.colliderect(enemy_rect) and self.collide_check == False:
                 self.collide_check = True
-                print('g -> m')
                 enemy.get_dmg()
 
     def draw(self, win):
@@ -249,7 +241,7 @@ class Mrakoplas:
         if self.att_check: # Character stays in place while attacking
             pass
         else:
-            if userInput[pygame.K_d] and self.x <= win_width - 64: # 'self.x <= win_width - 64' allows me to check whether the character is out of window
+            if userInput[pygame.K_d] and self.x <= 800 - 64: # 'self.x <= 800 - 64' allows me to check whether the character is out of window
                 self.x += self.velx
                 self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = True
@@ -281,11 +273,10 @@ class Mrakoplas:
         if self.fireball_check:
             if self.fireball_rect.colliderect(enemy_rect):
                 enemy.get_dmg()
-                print('m -> g')
                 self.fireball_check = False
 
     def fireball(self, win):
-        if -20<self.fireball_x<win_width:
+        if -20<self.fireball_x<800:
             if self.att_right and self.fireball_check:
                 win.blit(fireball_right[self.stepIndex_fireball//5], (self.fireball_x, self.fireball_y))
                 self.fireball_x += self.fireball_velx
@@ -357,41 +348,53 @@ class Mrakoplas:
         else:
             self.hp = 0
 
-guts = Guts(250, 290)
-mrakoplas = Mrakoplas(400, 290)
+class Game:
+    def __init__(self):
+        self.main_menu = MainMenu(self)
 
-def draw_guts():
-    guts.attack(userInput)
-    guts.move_guts(userInput)
-    guts.jump(userInput)
-    guts.draw(win)
-    guts.collision(mrakoplas.mrakoplas_rect, mrakoplas)
-    guts.hp_bar(win)
+        self.guts = Guts(250, 290)
+        self.mrakoplas = Mrakoplas(400, 290)
 
-def draw_mrakoplas():
-    mrakoplas.attack(userInput)
-    mrakoplas.move_mrakoplas(userInput)
-    mrakoplas.jump(userInput)
-    mrakoplas.draw(win)
-    mrakoplas.fireball(win)
-    mrakoplas.collision(guts.guts_rect, guts)
-    mrakoplas.hp_bar(win)
+        self.clock = pygame.time.Clock()
 
-# Game loop
-run = True
-while run:
-    clock.tick(60)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+        # I scale my background to win_width, win_height using pygame.transform
+        self.background = pygame.transform.scale(pygame.image.load(os.path.join("Background.png")), (self.main_menu.width, self.main_menu.height))
 
-    win.fill((0,0,0))
-    win.blit(background, (0,0))
+        self.userInput = None
 
-    # Input
-    userInput = pygame.key.get_pressed()
+    def draw_guts(self):
+        self.guts.attack(self.userInput)
+        self.guts.move_guts(self.userInput)
+        self.guts.jump(self.userInput)
+        self.guts.draw(self.main_menu.win)
+        self.guts.collision(self.mrakoplas.mrakoplas_rect, self.mrakoplas)
+        self.guts.hp_bar(self.main_menu.win)
 
-    draw_guts()
-    draw_mrakoplas()
+    def draw_mrakoplas(self):
+        self.mrakoplas.attack(self.userInput)
+        self.mrakoplas.move_mrakoplas(self.userInput)
+        self.mrakoplas.jump(self.userInput)
+        self.mrakoplas.draw(self.main_menu.win)
+        self.mrakoplas.fireball(self.main_menu.win)
+        self.mrakoplas.collision(self.guts.guts_rect, self.guts)
+        self.mrakoplas.hp_bar(self.main_menu.win)
 
-    pygame.display.update()
+    def Game_loop(self):
+        while self.main_menu.game_running:
+            self.clock.tick(60)
+            self.check_events()
+            self.main_menu.win.fill(self.main_menu.black)
+            self.main_menu.win.blit(self.background, (0, 0))
+            self.userInput = pygame.key.get_pressed()
+
+            self.draw_guts()
+            self.draw_mrakoplas()
+
+            pygame.display.update()
+
+
+    def check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.main_menu.game_running = False
+                self.main_menu.mm_running = False

@@ -17,6 +17,7 @@ class MainMenu:
         #Variables for checking loops
         self.mm_running = True
         self.game_running = False
+        self.end_running = False
 
         #Colors
         self.black = (0, 0, 0)
@@ -57,6 +58,35 @@ class MainMenu:
             self.quitText_rect = self.draw_text('quit', 50, self.quitx, self.quity, self.quit_color)
             self.check_events()
             pygame.display.update()
+
+    def end_loop(self):
+        while self.end_running:
+            self.clock.tick(60)
+            self.win.fill(self.black)
+
+            if self.game.mrakoplas.hp <= 0:
+                self.draw_text('guts wins', 50, self.mid_w, self.mid_h - 70, self.white)
+            elif self.game.guts.hp <= 0:
+                self.draw_text('mrakoplas wins', 50, self.mid_w, self.mid_h - 70, self.white)
+
+            self.draw_text('press enter to continue', 20, self.mid_w, self.mid_h + 50, self.white)
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.game_running = False
+                    self.mm_running = False
+                    self.end_running = False
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_RETURN:
+
+                        self.game.mrakoplas.__init__(400, 290)
+                        self.game.guts.__init__(250, 290)
+
+                        self.game.background = self.game.pick_map()
+
+                        self.game_running = False
+                        self.end_running = False
 
     def check_events(self):
         self.mouse_pos = pygame.mouse.get_pos()

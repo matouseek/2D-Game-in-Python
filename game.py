@@ -1,9 +1,14 @@
 # I'll be using os in order to load my images
 import os
 
+import pygame
+import random
 from menu import *
 
 # Loading Images
+background = [pygame.image.load(os.path.join("Background.png")), pygame.image.load(os.path.join("Background1.png"))
+              ]
+
 guts_idle = [pygame.image.load(os.path.join("guts idle", "guts idle1.png")),
         pygame.image.load(os.path.join("guts idle", "guts idle2.png")),
         pygame.image.load(os.path.join("guts idle", "guts idle3.png")),
@@ -113,7 +118,7 @@ class Guts:
         if self.att_check:
             pass
         else:
-            if userInput[pygame.K_RIGHT] and self.x <= 800 - 64: # 'self.x <= 800 - 64' allows me to check whether the character is out of window
+            if userInput[pygame.K_d] and self.x <= 800 - 64: # 'self.x <= 800 - 64' allows me to check whether the character is out of window
                 self.x += self.velx
                 self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = True
@@ -121,7 +126,7 @@ class Guts:
                 self.idle = False
                 self.att_right = True
                 self.att_left = False
-            elif userInput[pygame.K_LEFT] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
+            elif userInput[pygame.K_a] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
                 self.x -= self.velx
                 self.guts_rect = guts_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = False
@@ -136,7 +141,7 @@ class Guts:
                 self.stepIndex = 0
 
     def attack(self, userInput):
-        if userInput[pygame.K_RCTRL] and self.att_check == False:
+        if userInput[pygame.K_SPACE] and self.att_check == False:
             self.att_check = True
 
     def collision(self, enemy_rect, enemy):
@@ -178,7 +183,7 @@ class Guts:
                 self.stepIndex_Idle += 1
 
     def jump(self, userInput):
-        if userInput[pygame.K_UP] and self.jump_check is False:
+        if userInput[pygame.K_w] and self.jump_check is False:
             self.jump_check = True
         if self.jump_check:
             self.y -= self.vely*2
@@ -210,15 +215,15 @@ class Mrakoplas:
         # Velocities
         self.velx = 10
         self.vely = 10
-        self.fireball_velx = 2
+        self.fireball_velx = 9
 
         # Variables for checking which animation to print
         self.face_right = False
         self.face_left = False
         self.idle = True
         self.att_check = False
-        self.att_right = True
-        self.att_left = False
+        self.att_right = False
+        self.att_left = True
 
         # Variables for checking when an action ends
         self.jump_check = False
@@ -241,7 +246,7 @@ class Mrakoplas:
         if self.att_check: # Character stays in place while attacking
             pass
         else:
-            if userInput[pygame.K_d] and self.x <= 800 - 64: # 'self.x <= 800 - 64' allows me to check whether the character is out of window
+            if userInput[pygame.K_RIGHT] and self.x <= 800 - 64: # 'self.x <= 800 - 64' allows me to check whether the character is out of window
                 self.x += self.velx
                 self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = True
@@ -250,7 +255,7 @@ class Mrakoplas:
                 if self.fireball_check == False: #Fix pro to, aby se strany nemenily uprostred letu fireballu
                     self.att_right = True
                     self.att_left = False
-            elif userInput[pygame.K_a] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
+            elif userInput[pygame.K_LEFT] and self.x >= 0: # 'self.x >= 0' same thing as above, just with the left side of the window
                 self.x -= self.velx
                 self.mrakoplas_rect = mrakoplas_idle[0].get_rect(topleft=(self.x, self.y))
                 self.face_right = False
@@ -266,7 +271,7 @@ class Mrakoplas:
                 self.stepIndex = 0
 
     def attack(self, userInput):
-        if userInput[pygame.K_SPACE] and self.fireball_check == False:
+        if userInput[pygame.K_RCTRL] and self.fireball_check == False:
             self.att_check = True
 
     def collision(self, enemy_rect, enemy):
@@ -327,7 +332,7 @@ class Mrakoplas:
                 self.stepIndex_Idle += 1
 
     def jump(self, userInput):
-        if userInput[pygame.K_w] and self.jump_check is False:
+        if userInput[pygame.K_UP] and self.jump_check is False:
             self.jump_check = True
         if self.jump_check:
             self.y -= self.vely*2
@@ -358,9 +363,12 @@ class Game:
         self.clock = pygame.time.Clock()
 
         # I scale my background to win_width, win_height using pygame.transform
-        self.background = pygame.transform.scale(pygame.image.load(os.path.join("Background.png")), (self.main_menu.width, self.main_menu.height))
+        self.background = self.pick_map()
 
         self.userInput = None
+
+    def pick_map(self):
+        return pygame.transform.scale(random.choice(background), (self.main_menu.width, self.main_menu.height))
 
     def draw_guts(self):
         self.guts.attack(self.userInput)
@@ -382,7 +390,6 @@ class Game:
     def Game_loop(self):
         while self.main_menu.game_running:
             self.clock.tick(60)
-            self.check_events()
             self.main_menu.win.fill(self.main_menu.black)
             self.main_menu.win.blit(self.background, (0, 0))
             self.userInput = pygame.key.get_pressed()
@@ -392,9 +399,16 @@ class Game:
 
             pygame.display.update()
 
+            self.check_events()
 
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.main_menu.game_running = False
                 self.main_menu.mm_running = False
+        if self.mrakoplas.hp <= 0:
+            self.main_menu.end_running = True
+            self.main_menu.end_loop()
+        elif self.guts.hp <= 0:
+            self.main_menu.end_running = True
+            self.main_menu.end_loop()

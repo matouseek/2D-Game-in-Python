@@ -85,6 +85,8 @@ class MainMenu:
 
                         self.game.background = self.game.pick_map()
 
+                        self.start_color = self.white
+
                         self.game_running = False
                         self.end_running = False
 

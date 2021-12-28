@@ -126,7 +126,7 @@ or the x-axis value reaches 0
 \
     **def fireball(self, win)** - prints the fireball and stops the user from firing another fireball
     until the first one disappears behind the edges of the window
-  
+
     * **Guts**\
     To be able to attack as Guts we'll need the following variables and functions:
     ```python
@@ -150,12 +150,12 @@ or the x-axis value reaches 0
             if self.att_check:
                 if #att animation - done:
                     self.att_check = False
-            if self.att_right:
-                win.blit(#att animation - right)
-                win.blit(#sword animation - right)
-            elif self.att_left:
-                win.blit(#att animation - left)
-                win.blit(#sword animation - left)
+                if self.att_right:
+                    win.blit(#att animation - right)
+                    win.blit(#sword animation - right)
+                elif self.att_left:
+                    win.blit(#att animation - left)
+                    win.blit(#sword animation - left)
     ```
     **self.att_right** - variable for checking whether to attack right - This is set True while running right\
 \
@@ -200,7 +200,7 @@ class Mrakoplas:
         if self.face_right:
             win.blit(mrakoplas_right[self.stepIndex//4], (self.x, self.y))
             self.stepIndex += 1
-        if self.face_left:
+        elif self.face_left:
             win.blit(mrakoplas_left[self.stepIndex//4], (self.x, self.y))
             self.stepIndex += 1
         elif self.idle:
@@ -234,9 +234,6 @@ If we want our character to jump we need the following variables and functions:\
 (example shown on the Guts class)
 
 ```python
-import pygame
-
-
 class Guts:
     def __init__(self, y):
         self.y = y
@@ -269,3 +266,85 @@ in this case it will be the UP key\
 -1 will be subtracted from self.vely for every frame that self.jump_check is True\
 -this will result in self.vely eventually turning negative and moving the character back into its original position\
 -because of the decaying (and after self.vely < 0, raising) velocity it also simulates gravity pretty well
+
+* **Collisions**\
+If we want to track collisions we'll need the following variables and functions:\
+(Example shown on the Guts class)
+```python
+class Guts:
+    def __init__(self):
+        self.att_check = False
+        self.dragonslayer_rect = None
+        self.collide_check = False
+        self.stepIndex_Attack = 0
+        self.att_right = True
+        self.att_left = False
+
+    def draw(self, win):
+        if self.att_check:
+            if self.stepIndex_Attack >= 20:
+                #Attack is finished
+            if self.att_right:
+                self.dragonslayer_rect = #Dragonslayer rect
+            elif self.att_left:
+                self.dragonslayer_rect = #Dragonslayer rect
+        else:
+            #Movement animation
+
+    def collision(self, enemy_rect, enemy):
+        if self.att_right:
+            if self.dragonslayer_rect.colliderect(enemy_rect) and self.collide_check == False:
+                self.collide_check = True
+                enemy.get_dmg()
+```
+**self.att_check** - variable for checking if and when to print attack animation and stop move ment\
+\
+**self.dragonslyer_rect** - dragonslayers rectangle\
+\
+**self.collide_check** - variable for checking whether a collision happened or not\
+\
+**self.stepIndex_Attack** - index to help us track which frame of the attack animation to print\
+\
+**self.att_right** - variable for checking whether to attack right\
+\
+**self.att_left** - variable for checking whether to attack left\
+\
+**def draw(self, win)** - here the draw function helps us by assigning
+a rectangle to **self.dragonslayer_rect**\
+\
+**def collision(self, enemy_rect, enemy)** - function for recognizing collision
+between dragonslayer and enemy_rect, in case a collision happens a get_dmg function
+will be performed (see Health bars for more info on that)
+
+* **Health bars**\
+For tracking health we will need the following variables and functions:\
+ (Example shown on Guts class)
+```python
+class Guts:
+    def __init__(self, x, y):
+        self.hp = 8
+        self.x = x
+        self.y = y
+    
+    def get_dmg(self):
+        if self.hp > 0:
+            self.hp -= 1
+        else:
+            self.hp = 0
+
+    def hp_bar(self, win):
+        pygame.draw.rect(win, (255, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10))
+        pygame.draw.rect(win, (0, 255, 0), pygame.Rect(self.x, self.y - 10, self.hp*8, 10))
+        pygame.draw.rect(win, (0, 0, 0), pygame.Rect(self.x, self.y - 10, 64, 10), 2)
+```
+
+**self.hp** - remaining health of the character\
+\
+**self.x** - position of the character on the x-axis\
+\
+**self.y** - position of the character on the y-axis\
+\
+**def get_dmg(self)** - this function gets called when collision is detected and deals
+damage to the character\
+
+**def hp_bar(self, win)** - this function prints health bars on the screen

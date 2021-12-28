@@ -297,7 +297,7 @@ class Guts:
                 self.collide_check = True
                 enemy.get_dmg()
 ```
-**self.att_check** - variable for checking if and when to print attack animation and stop move ment\
+**self.att_check** - variable for checking if and when to print attack animation and stop movement\
 \
 **self.dragonslyer_rect** - dragonslayers rectangle\
 \
@@ -312,7 +312,7 @@ class Guts:
 **def draw(self, win)** - here the draw function helps us by assigning
 a rectangle to **self.dragonslayer_rect**\
 \
-**def collision(self, enemy_rect, enemy)** - function for recognizing collision
+**def collision(self, enemy_rect, enemy)** - function for recognizing collisions
 between dragonslayer and enemy_rect, in case a collision happens a get_dmg function
 will be performed (see Health bars for more info on that)
 
@@ -346,5 +346,5 @@ class Guts:
 \
 **def get_dmg(self)** - this function gets called when collision is detected and deals
 damage to the character\
-
+\
 **def hp_bar(self, win)** - this function prints health bars on the screen

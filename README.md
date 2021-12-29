@@ -353,7 +353,7 @@ damage to the character\
 \
 **def hp_bar(self, win)** - this function prints health bars on the screen
 
-##Menu logic
+## Menu logic
 
 The second part of my project is an interactive menu. Through this menu you can start the game up
 or exit the window. This menu is the first thing that will pop up when you start the program.

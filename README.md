@@ -15,8 +15,12 @@ This is also the first time I'm using GitHub on a real project, so I'll have thi
 This file is going to be updated regularly until I finish my work and submit it.
 
 ## Game logic
+The first part of my project is the game itself. Bellow I'm going to show how specific parts of my program work and what is the
+logic behind them.
+
 Just a side note but none of the code bellow will work on its own, its used here only to showcase how certain
-mechanics work without having to take huge chunks of code from the actual game
+mechanics work without having to take huge chunks of code from the actual game. You can find the whole code in
+**[game.py](https://github.com/matouseek/2D-Game-in-Python/blob/master/game.py)** file.
 * **Movement**
 
 To move our character we'll be working with the following variables and functions:
@@ -348,3 +352,85 @@ class Guts:
 damage to the character\
 \
 **def hp_bar(self, win)** - this function prints health bars on the screen
+
+##Menu logic
+
+The second part of my project is an interactive menu. Through this menu you can start the game up
+or exit the window. This menu is the first thing that will pop up when you start the program.
+
+You can find all the code mentioned in this part in the **[menu.py](https://github.com/matouseek/2D-Game-in-Python/blob/master/menu.py)** file.
+
+* **The game parameter**
+```python
+class MainMenu:
+    def __init__(self, game):
+        #The rest of the code
+```
+The game parameter is one of the most crucial parts of our menu code. When creating an object
+from this MainMenu class in **game.py** we reference the Game object itself as the argument.
+By doing this we can access functions and variables from Game class in our MainMenu object and vice versa,
+we can access MainMenu functions and variables from our Game object in **game.py**.
+
+```python
+class Game:
+    def __init__(self):
+        self.main_menu = MainMenu(self)
+```
+
+* **MainMenu loop**
+```python
+class MainMenu:
+    def __init__(self):
+        self.mm_running = True
+        self.clock = pygame.time.Clock()
+        self.width = 800
+        self.height = 400
+        self.win = pygame.display.set_mode((self.width, self.height))
+        self.startText_rect = None
+        self.quitText_rect = None
+        self.black = (0, 0, 0)
+        
+    def draw_text(self):
+        #Fuction for drawing text
+    
+    def check_events(self):
+        #Function for checking events
+        #This function is explained bellow
+        
+    def MainMenu_loop(self):
+        while self.mm_runnig:
+            self.clock.tick(60)
+            self.win.fill(self.black)
+            self.draw_text('main menu', 50, self.mmx, self.mmy, self.mm_color)
+            self.startText_rect = self.draw_text('start', 50, self.startx, self.starty, self.start_color)
+            self.quitText_rect = self.draw_text('quit', 50, self.quitx, self.quity, self.quit_color)
+            self.check_events()
+            pygame.display.update()
+```
+**self.mm_running** - variable for checking whether our menu is still running
+
+**self.clock** - variable for our pygame clock, it caps our framerate at 60 FPS
+
+**self.width** - width of our window
+
+**self.height** - height of our window
+
+**self.win** - our window created using pygame
+
+**self.startText_rect** - rectangle of our START text, we will need this to track collisions
+between mouse and the rectangle
+
+**self.quitText_rect** - used here for the same purpose as **self.starText_rect** is used above
+
+**self.black** - black color
+
+**def draw_text(self)** - function for rendering and drawing text, it returns the text rectangle,
+look into the code to find more information about this function as I won't be explaining it here
+
+**def check_events(self)** - function for checking certain events, explained bellow in more detail
+
+**def MainMenu_loop(self)** - function that runs in a loop and for every iteration:
+* ticks the clock
+* fills the window with black color
+* prints the 'main menu', 'start' and 'quit' texts in corresponding color
+* checks the events listed in check_events() function

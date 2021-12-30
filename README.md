@@ -430,7 +430,52 @@ look into the code to find more information about this function as I won't be ex
 **def check_events(self)** - function for checking certain events, explained bellow in more detail
 
 **def MainMenu_loop(self)** - function that runs in a loop and for every iteration:
-* ticks the clock
-* fills the window with black color
-* prints the 'main menu', 'start' and 'quit' texts in corresponding color
-* checks the events listed in check_events() function
+1. ticks the clock
+2. fills the window with black color
+3. prints the 'main menu', 'start' and 'quit' texts in corresponding color
+4. checks the events listed in check_events() function
+
+
+* **check_events loop**
+
+check_events function is called in every iteration of MainMenu_loop.
+This function checks for specific events that can occur while in this loop.
+```python
+class MainMenu:
+    #Here is all the code mentioned above + check_events function
+    
+    def check_events(self):
+        self.mouse_pos = pygame.mouse.get_pos()
+```
+ 
+It updates our mouse position for every iteration.
+
+```python
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.mm_running = False
+                self.game_running = False
+```
+
+The part above checks for potential game quit done by closing the window itself.
+
+```python
+            if self.startText_rect.collidepoint(self.mouse_pos):
+                self.start_color = self.red
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.game_running = True
+                    self.game.Game_loop()
+            else:
+                self.start_color = self.white
+
+            if self.quitText_rect.collidepoint(self.mouse_pos):
+                self.quit_color = self.red
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mm_running = False
+            else:
+                self.quit_color = self.white
+```
+
+Here is the part that paints the text red if our mouse collides with the text rectangle.
+And if you were to press a mouse button while the collision is true it would either quit the menu
+(collision with 'quit' text) or start the game (collision with 'start' text).

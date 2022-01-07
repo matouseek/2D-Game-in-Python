@@ -479,3 +479,50 @@ The part above checks for potential game quit done by closing the window itself.
 Here is the part that paints the text red if our mouse collides with the text rectangle.
 And if you were to press a mouse button while the collision is true it would either quit the menu
 (collision with 'quit' text) or start the game (collision with 'start' text).
+
+* **end_loop**
+
+This is a function that gets called in the game loop whenever one of the characters hp is 0 or less.
+The first thing that this function does is that it displays the name of whoever wins
+on the endgame screen.
+
+```python
+class Menu:
+    #Here is all the code mentioned above + end_loop function
+    
+    def end_loop(self):
+        while self.end_running:
+            self.clock.tick(60)
+            self.win.fill(self.black)
+
+            if self.game.mrakoplas.hp <= 0:
+                self.draw_text('guts wins', 50, self.mid_w, self.mid_h - 70, self.white)
+            elif self.game.guts.hp <= 0:
+                self.draw_text('mrakoplas wins', 50, self.mid_w, self.mid_h - 70, self.white)
+
+            self.draw_text('press enter to continue', 20, self.mid_w, self.mid_h + 50, self.white)
+            pygame.display.update()
+```
+
+The second thing this function does is that, if you choose to play again, it resets all
+the variables of both character classes (stepIndexes, positions, att_checks etc.)
+
+```python
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.game_running = False
+                    self.mm_running = False
+                    self.end_running = False
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_RETURN:
+
+                        self.game.mrakoplas.__init__(400, 290)
+                        self.game.guts.__init__(250, 290)
+
+                        self.game.background = self.game.pick_map()
+
+                        self.start_color = self.white
+
+                        self.game_running = False
+                        self.end_running = False
+```

@@ -14,14 +14,19 @@ This is also the first time I'm using GitHub on a real project, so I'll have thi
 
 This file is going to be updated regularly until I finish my work and submit it.
 
-## Game logic
+## Table of contents
+1. [Game logic](#Game_logic)
+    1. [Movement](#Movement)
+    2. [Attacking](#Attacking)
+
+## Game logic <a name="Game_logic"></a>
 The first part of my project is the game itself. Bellow I'm going to show how specific parts of my program work and what is the
 logic behind them.
 
 Just a side note but none of the code bellow will work on its own, its used here only to showcase how certain
 mechanics work without having to take huge chunks of code from the actual game. You can find the whole code in
 **[game.py](https://github.com/matouseek/2D-Game-in-Python/blob/master/game.py)** file.
-* **Movement**
+* **Movement** <a name="Movement"></a>
 
 To move our character we'll be working with the following variables and functions:
 
@@ -58,7 +63,7 @@ If the player presses the Left key and our characters x-axis value is more than 
 the value of our character will decrease by 10 for every frame until we let go of that key
 or the x-axis value reaches 0
 
-  * **Attacking**
+  * **Attacking** <a name="Attacking"></a>
       * **Mrakoplas**\
     To be able to attack as Mrakoplas we'll need the following variables and functions:
     ```python

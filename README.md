@@ -18,6 +18,15 @@ This file is going to be updated regularly until I finish my work and submit it.
 1. [Game logic](#Game_logic)
     1. [Movement](#Movement)
     2. [Attacking](#Attacking)
+    3. [Animations](#Animations)
+    4. [Jumping](#Jumping)
+    5. [Collisions](#Collisions)
+    6. [Health bars](#Health_bars)
+2. [Menu logic](#Menu_logic)
+    1. [The game parameter](#Game_parameter)
+    2. [MainMenu loop](#mm_loop)
+    3. [check_events loop](#check_events)
+    4. [end_loop](#End_loop)
 
 ## Game logic <a name="Game_logic"></a>
 The first part of my project is the game itself. Bellow I'm going to show how specific parts of my program work and what is the
@@ -182,7 +191,7 @@ or the x-axis value reaches 0
 \
     **def draw(self, win)** - prints the attack animation
 
-  * **Animations**\
+  * **Animations** <a name="Animations"></a>\
 In order to print animations we'll need these variables and functions:\
 (example shown on the Mrakoplas class, specifically on his move animation)
 ```python
@@ -238,7 +247,7 @@ class Mrakoplas:
 -the index of each frame is divided by 4 and the indexes reset if the value is 16, that is because we want the animations to last longer without changing the FPS, 
 we can achieve that by printing one frame more than once (in this case 4 times) before moving onto another one
 
-  * **Jumping**\
+  * **Jumping** <a name="Jumping"></a>\
 If we want our character to jump we need the following variables and functions:\
 (example shown on the Guts class)
 
@@ -276,7 +285,7 @@ in this case it will be the UP key\
 -this will result in self.vely eventually turning negative and moving the character back into its original position\
 -because of the decaying (and after self.vely < 0, raising) velocity it also simulates gravity pretty well
 
-* **Collisions**\
+* **Collisions** <a name="Collisions"></a>\
 If we want to track collisions we'll need the following variables and functions:\
 (Example shown on the Guts class)
 ```python
@@ -325,7 +334,7 @@ a rectangle to **self.dragonslayer_rect**\
 between dragonslayer and enemy_rect, in case a collision happens a get_dmg function
 will be performed (see Health bars for more info on that)
 
-* **Health bars**\
+* **Health bars** <a name="Health_bars"></a>\
 For tracking health we will need the following variables and functions:\
  (Example shown on Guts class)
 ```python
@@ -358,14 +367,14 @@ damage to the character\
 \
 **def hp_bar(self, win)** - this function prints health bars on the screen
 
-## Menu logic
+## Menu logic <a name="Menu_logic"></a>
 
 The second part of my project is an interactive menu. Through this menu you can start the game up
 or exit the window. This menu is the first thing that will pop up when you start the program.
 
 You can find all the code mentioned in this part in the **[menu.py](https://github.com/matouseek/2D-Game-in-Python/blob/master/menu.py)** file.
 
-* **The game parameter**
+* **The game parameter** <a name="Game_parameter"></a>
 ```python
 class MainMenu:
     def __init__(self, game):
@@ -382,7 +391,7 @@ class Game:
         self.main_menu = MainMenu(self)
 ```
 
-* **MainMenu loop**
+* **MainMenu loop** <a name="mm_loop"></a>
 ```python
 class MainMenu:
     def __init__(self):
@@ -441,7 +450,7 @@ look into the code to find more information about this function as I won't be ex
 4. checks the events listed in check_events() function
 
 
-* **check_events loop**
+* **check_events loop** <a name="check_events"></a>
 
 check_events function is called in every iteration of MainMenu_loop.
 This function checks for specific events that can occur while in this loop.
@@ -485,7 +494,7 @@ Here is the part that paints the text red if our mouse collides with the text re
 And if you were to press a mouse button while the collision is true it would either quit the menu
 (collision with 'quit' text) or start the game (collision with 'start' text).
 
-* **end_loop**
+* **end_loop** <a name="End_loop"></a>
 
 This is a function that gets called in the game loop whenever one of the characters hp is 0 or less.
 The first thing that this function does is that it displays the name of whoever wins

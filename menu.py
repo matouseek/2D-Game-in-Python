@@ -3,6 +3,7 @@ import pygame
 class MainMenu:
     def __init__(self, game):
         pygame.init()
+        pygame.display.set_caption('2D Game in Python')
 
         self.clock = pygame.time.Clock()
 

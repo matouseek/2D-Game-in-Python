@@ -1,0 +1,4 @@
+Hru spustíte dvouklikem na program "2D Game in Python.exe" ve složce 2D-Game-in-Python.
+
+První postava se pohybuje pomocí tlačítek W A S D a útočí mezerníkem.
+Druhá postava se pohybuje pomocí šipek na klávesnici a útočí pravým CTRL.

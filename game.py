@@ -271,7 +271,7 @@ class Mrakoplas:
                 self.stepIndex = 0
 
     def attack(self, userInput):
-        if userInput[pygame.K_RCTRL] and self.fireball_check == False:
+        if userInput[pygame.K_RETURN] and self.fireball_check == False:
             self.att_check = True
 
     def collision(self, enemy_rect, enemy):
